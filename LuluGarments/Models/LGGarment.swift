@@ -8,5 +8,6 @@
 import Foundation
 
 struct LGGarment {
-    
+    var garmentName = ""
+    var addedDate = Date()
 }
