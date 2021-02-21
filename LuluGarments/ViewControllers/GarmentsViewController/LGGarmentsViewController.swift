@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  LGGarmentsViewController.swift
 //  LuluGarments
 //
 //  Created by Gabriel on 2/18/21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class LGGarmentsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
