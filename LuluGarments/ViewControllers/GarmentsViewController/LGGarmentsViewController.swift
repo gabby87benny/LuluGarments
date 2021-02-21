@@ -12,44 +12,72 @@ struct LGGarmentsViewControllerConstants {
 }
 
 class LGGarmentsViewController: UIViewController {
-
     @IBOutlet weak var garmentsTableView: UITableView!
     @IBOutlet weak var sortSegmentControl: UISegmentedControl!
     
-    var garmentsList: [LGGarment] = []
+    private var garmentsViewModel = LGGarmentsViewModel()
+    
+    //TBD : Spinner
+    
+    init(viewModel: LGGarmentsViewModel = LGGarmentsViewModel()) {
+        self.garmentsViewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        self.garmentsViewModel = LGGarmentsViewModel()
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         garmentsTableView.register(UITableViewCell.self, forCellReuseIdentifier: LGGarmentsViewControllerConstants.garmentsTableViewIdentifier)
-        garmentsList = garmentsList.sorted { $0.garmentName.lowercased() < $1.garmentName.lowercased() }
+        garmentsViewModel.retrieveGarments()
         garmentsTableView.tableFooterView = UIView()
         garmentsTableView.reloadData()
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+        let destinationVC = segue.destination as! LGAddGarmentViewController
+        destinationVC.delegate = self
     }
     
     @IBAction func segmentValueChanged(_ sender: UISegmentedControl) {
+        if(sender.selectedSegmentIndex == 0){
+            garmentsViewModel.sortType = LGGarmentsSortType.LGGarmentsSortTypeAlhabetical
+        }
+        else{
+            garmentsViewModel.sortType = LGGarmentsSortType.LGGarmentsSortTypeCreationDate
+        }
         
+        garmentsViewModel.sortGarments()
+        garmentsTableView.reloadData()
     }
 }
 
 extension LGGarmentsViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return garmentsList.count
+        return garmentsViewModel.garmentsCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: LGGarmentsViewControllerConstants.garmentsTableViewIdentifier, for: indexPath)
-        cell.textLabel?.text = garmentsList[indexPath.row].garmentName
+        let garment = garmentsViewModel.garment(at: indexPath)
+        cell.textLabel?.text = garment?.garmentName
         cell.textLabel?.textColor = UIColor.black
         return cell
     }
 }
 
-extension LGGarmentsViewController {
-    
-    
+extension LGGarmentsViewController : UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+}
+
+extension LGGarmentsViewController: LGAddGarment_Protocol {
+    func addGarment(name: String) {
+        garmentsViewModel.saveGarments(name: name)
+        garmentsTableView.reloadData()
+    }
 }
