@@ -20,6 +20,7 @@ class LGGarmentsViewModel {
     init(garmentsList: [LGGarment] = [], dbManager: LGDatabaseManager_Protocol = LGDatabaseManager()) {
         self.garmentsList = garmentsList
         self.databaseManager = dbManager
+        self.garmentsList.append(contentsOf: self.addSampleData())
     }
     
     /**
@@ -82,5 +83,11 @@ class LGGarmentsViewModel {
     func garment(at indexPath: IndexPath) -> LGGarment? {
         guard indexPath.row < self.garmentsList.count  else { return nil }
         return garmentsList[indexPath.row]
+    }
+}
+
+extension LGGarmentsViewModel {
+    private func addSampleData() -> [LGGarment] {
+        return [LGGarment(garmentName: "Dress", addedDate: Date().addingTimeInterval(10)), LGGarment(garmentName: "Pant", addedDate: Date().addingTimeInterval(12)), LGGarment(garmentName: "Shirt"), LGGarment(garmentName: "Tshirt", addedDate: Date().addingTimeInterval(14))]
     }
 }
