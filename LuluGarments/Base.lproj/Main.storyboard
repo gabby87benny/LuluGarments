@@ -56,7 +56,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="garmentsTableView" destination="Vkq-xZ-ewv" id="3M3-ME-ba2"/>
+                        <outlet property="garmentsTableView" destination="Vkq-xZ-ewv" id="6ry-vf-XIH"/>
                         <outlet property="sortSegmentControl" destination="axD-Vm-vL2" id="Dvx-oo-Bdw"/>
                     </connections>
                 </viewController>

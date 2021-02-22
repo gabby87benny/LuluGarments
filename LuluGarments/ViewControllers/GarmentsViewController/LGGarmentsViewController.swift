@@ -16,9 +16,7 @@ class LGGarmentsViewController: UIViewController {
     @IBOutlet weak var sortSegmentControl: UISegmentedControl!
     
     private var garmentsViewModel = LGGarmentsViewModel()
-    
-    //TBD : Spinner
-    
+        
     init(viewModel: LGGarmentsViewModel = LGGarmentsViewModel()) {
         self.garmentsViewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -31,10 +29,10 @@ class LGGarmentsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        garmentsTableView.register(UITableViewCell.self, forCellReuseIdentifier: LGGarmentsViewControllerConstants.garmentsTableViewIdentifier)
-        garmentsViewModel.retrieveGarments()
-        garmentsTableView.tableFooterView = UIView()
-        garmentsTableView.reloadData()
+        self.garmentsViewModel.retrieveGarments()
+        self.garmentsTableView.register(UITableViewCell.self, forCellReuseIdentifier: LGGarmentsViewControllerConstants.garmentsTableViewIdentifier)
+        self.garmentsTableView.tableFooterView = UIView()
+        self.garmentsTableView.reloadData()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -77,7 +75,10 @@ extension LGGarmentsViewController : UITableViewDelegate {
 
 extension LGGarmentsViewController: LGAddGarment_Protocol {
     func addGarment(name: String) {
-        garmentsViewModel.saveGarments(name: name)
-        garmentsTableView.reloadData()
+        garmentsViewModel.saveGarments(name: name) { (isSaved, error) in
+            if isSaved == true {
+                garmentsTableView.reloadData()
+            }
+        }
     }
 }

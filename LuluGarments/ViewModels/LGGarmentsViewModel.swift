@@ -26,10 +26,13 @@ class LGGarmentsViewModel {
     Saves data
     */
     
-    func saveGarments(name: String) {
+    func saveGarments(name: String, completion: (Bool, LGDatabaseError?) -> ()) {
         self.garmentsList.append(LGGarment(garmentName: name))
-        self.databaseManager.saveData(garmentName: name)
-        sortGarments()
+        
+        self.databaseManager.saveData(garmentName: name) { (isSaved, error) -> (Void) in
+            sortGarments()
+            completion(isSaved, error as? LGDatabaseError)
+        }
     }
     
     /**

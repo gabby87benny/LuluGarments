@@ -9,15 +9,15 @@ import Foundation
 import UIKit
 import CoreData
 
+protocol LGDatabaseManager_Protocol {
+    func saveData(garmentName:String, completion: (Bool, Error) -> (Void))
+    func retrieveData(completion: ([LGGarment], Error) -> (Void))
+}
+
 enum LGDatabaseError: Error {
     case LGDatabaseErrorNone
     case LGDatabaseErrorSave
     case LGDatabaseErrorFetch
-}
-
-protocol LGDatabaseManager_Protocol {
-    func saveData(garmentName:String)
-    func retrieveData(completion: ([LGGarment], Error) -> (Void))
 }
 
 class LGDatabaseManager: LGDatabaseManager_Protocol {
@@ -28,7 +28,7 @@ class LGDatabaseManager: LGDatabaseManager_Protocol {
         
     }
     
-    func saveData(garmentName:String) {
+    func saveData(garmentName:String, completion: (Bool, Error) -> (Void)) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
         let userEntity = NSEntityDescription.entity(forEntityName: "Garment", in: managedContext)!
@@ -38,9 +38,12 @@ class LGDatabaseManager: LGDatabaseManager_Protocol {
         
         do {
             try managedContext.save()
+            completion(true, dbError)
         }
         catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
+            dbError = LGDatabaseError.LGDatabaseErrorSave
+            completion(false, dbError)
         }
     }
     
